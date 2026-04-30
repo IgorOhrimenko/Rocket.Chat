@@ -2609,6 +2609,7 @@ const addAbacAttributesToUserDirectly = async (userId: string, abacAttributes: I
 		});
 
 		after(async () => {
+			await Promise.all(createdRids.map((rid) => request.delete(`${v1}/abac/rooms/${rid}/attributes`).set(credentials).expect(200)));
 			await Promise.all(createdRids.map((rid) => deleteRoom({ type: 'p', roomId: rid })));
 			await request.delete(`${v1}/abac/attributes/${announceAttrId}`).set(credentials).expect(200);
 			await deleteUser(owner);
