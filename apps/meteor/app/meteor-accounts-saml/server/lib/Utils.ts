@@ -50,6 +50,10 @@ export class SAMLUtils {
 		relayState = value;
 	}
 
+	public static get logger(): Logger | undefined {
+		return logger;
+	}
+
 	public static getServiceProviderOptions(providerName: string): IServiceProviderOptions | undefined {
 		this.log({ providerName, providerList });
 

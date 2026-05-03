@@ -79,6 +79,7 @@ const resetTestData = async ({ api, cleanupOnly = false }: { api?: any; cleanupO
 		{ _id: 'SAML_Custom_Default_idp_slo_redirect_url', value: 'http://localhost:8080/simplesaml/saml2/idp/SingleLogoutService.php' },
 		{ _id: 'SAML_Custom_Default_button_label_text', value: 'SAML test login button' },
 		{ _id: 'SAML_Custom_Default_button_color', value: '#185925' },
+		{ _id: 'SAML_Custom_Default_signature_validation_type', value: 'None' },
 	];
 
 	await Promise.all(settings.map(({ _id, value }) => setSettingValueById(api, _id, value)));

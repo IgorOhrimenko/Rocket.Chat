@@ -69,6 +69,17 @@ const getSamlConfigs = function (service: string): SAMLConfiguration {
 	return configs;
 };
 
+const isValidConfiguration = function (key: string, samlConfigs: SAMLConfiguration): boolean {
+	const needsCert = samlConfigs.signatureValidationType !== 'None';
+
+	if (!samlConfigs.secret.cert && needsCert) {
+		SAMLUtils.log({ msg: 'SAML Configuration missing Custom Certificate setting', key });
+		return false;
+	}
+
+	return true;
+};
+
 const configureSamlService = function (samlConfigs: Record<string, any>): IServiceProviderOptions {
 	let privateCert = null;
 	let privateKey = null;
@@ -124,10 +135,15 @@ export const loadSamlServiceProviders = async function (): Promise<void> {
 			services.map(async ([key, value]) => {
 				if (value === true) {
 					const samlConfigs = getSamlConfigs(key);
-					SAMLUtils.log({ key });
-					await LoginServiceConfiguration.createOrUpdateService(serviceName, samlConfigs);
-					void notifyOnLoginServiceConfigurationChangedByService(serviceName);
-					return configureSamlService(samlConfigs);
+
+					if (isValidConfiguration(key, samlConfigs)) {
+						SAMLUtils.log({ msg: 'Loading SAML Provider', key });
+						await LoginServiceConfiguration.createOrUpdateService(serviceName, samlConfigs);
+						void notifyOnLoginServiceConfigurationChangedByService(serviceName);
+						return configureSamlService(samlConfigs);
+					}
+
+					SAMLUtils.logger?.warn({ msg: 'SAML Provider not loaded due to invalid configuration', key });
 				}
 
 				const service = await LoginServiceConfiguration.findOneByService(serviceName, { projection: { _id: 1 } });
@@ -207,6 +223,7 @@ export const addSettings = async function (name: string): Promise<void> {
 					await this.add(`SAML_Custom_${name}_signature_validation_type`, 'All', {
 						type: 'select',
 						values: [
+							{ key: 'None', i18nLabel: 'SAML_Custom_signature_validation_none' },
 							{ key: 'Response', i18nLabel: 'SAML_Custom_signature_validation_response' },
 							{ key: 'Assertion', i18nLabel: 'SAML_Custom_signature_validation_assertion' },
 							{ key: 'Either', i18nLabel: 'SAML_Custom_signature_validation_either' },

@@ -88,7 +88,7 @@ export type SAMLConfiguration = {
 		cert: string;
 		algorithm: SAMLSignatureAlgorithm;
 	};
-	signatureValidationType: 'All' | 'Response' | 'Assertion' | 'Either';
+	signatureValidationType: 'All' | 'Response' | 'Assertion' | 'Either' | 'None';
 	userDataFieldMap: string;
 	allowedClockDrift: number;
 	channelsAttributeUpdate: boolean;

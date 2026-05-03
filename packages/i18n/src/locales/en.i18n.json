@@ -4676,6 +4676,7 @@
   "SAML_Custom_signature_validation_all": "Validate All Signatures",
   "SAML_Custom_signature_validation_assertion": "Validate Assertion Signature",
   "SAML_Custom_signature_validation_either": "Validate Either Signature",
+  "SAML_Custom_signature_validation_none": "Don't Validate Signatures",
   "SAML_Custom_signature_validation_response": "Validate Response Signature",
   "SAML_Custom_signature_validation_type": "Signature Validation Type",
   "SAML_Custom_signature_validation_type_description": "This setting will be ignored if no Custom Certificate is provided.",

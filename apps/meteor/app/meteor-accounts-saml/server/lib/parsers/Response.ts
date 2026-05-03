@@ -242,16 +242,20 @@ export class ResponseParser {
 	}
 
 	private verifySignatures(response: Element, assertionData: ISAMLAssertion, xml: string): void {
-		if (!this.serviceProviderOptions.cert) {
-			return;
-		}
-
 		const signatureType = this.serviceProviderOptions.signatureValidationType;
 
 		const checkEither = signatureType === 'Either';
 		const checkResponse = signatureType === 'Response' || signatureType === 'All' || checkEither;
 		const checkAssertion = signatureType === 'Assertion' || signatureType === 'All' || checkEither;
 		let anyValidSignature = false;
+
+		if (!this.serviceProviderOptions.cert) {
+			if (checkResponse || checkAssertion) {
+				SAMLUtils.log('Missing Signature validation params');
+				throw new Error('Unable to validate signature');
+			}
+			return;
+		}
 
 		if (checkResponse) {
 			SAMLUtils.log('Verify Document Signature');
