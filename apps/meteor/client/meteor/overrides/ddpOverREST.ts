@@ -2,6 +2,7 @@ import { DDPCommon } from 'meteor/ddp-common';
 import { Meteor } from 'meteor/meteor';
 
 import { sdk } from '../../../app/utils/client/lib/SDKClient';
+import { isSdkTransportEnabled } from '../../lib/sdk/sdkTransportEnabled';
 import { getUserId } from '../../lib/user';
 
 const bypassMethods: string[] = ['setUserStatus', 'logout'];
@@ -128,4 +129,6 @@ const withDDPOverREST = (_send: (this: Meteor.IMeteorConnection, message: Meteor
 	};
 };
 
-Meteor.connection._send = withDDPOverREST(Meteor.connection._send);
+if (isSdkTransportEnabled()) {
+	Meteor.connection._send = withDDPOverREST(Meteor.connection._send);
+}
